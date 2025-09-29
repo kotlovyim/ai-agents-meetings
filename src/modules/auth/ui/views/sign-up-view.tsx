@@ -20,27 +20,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
-
-const formSchema = z
-    .object({
-        name: z.string().min(3, "Name must be at least 3 characters"),
-        email: z.email("Invalid email address"),
-        password: z.string().min(6, "Password must be at least 6 characters"),
-        confirmPassword: z
-            .string()
-            .min(6, "Password must be at least 6 characters"),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-        message: "Passwords don't match",
-        path: ["confirmPassword"],
-    });
+import { registerSchema } from "../../constants/registerSchema";
 
 export const SignUpView = () => {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
-    const onSubmit = async (data: z.infer<typeof formSchema>) => {
+    const onSubmit = async (data: z.infer<typeof registerSchema>) => {
         setError(null);
         setLoading(true);
         const { error } = await authClient.signUp.email(
@@ -53,8 +40,8 @@ export const SignUpView = () => {
         );
     };
 
-    const form = useForm<z.infer<typeof formSchema>>({
-        resolver: zodResolver(formSchema),
+    const form = useForm<z.infer<typeof registerSchema>>({
+        resolver: zodResolver(registerSchema),
         defaultValues: {
             email: "",
             password: "",
