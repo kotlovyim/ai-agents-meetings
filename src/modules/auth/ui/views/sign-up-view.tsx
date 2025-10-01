@@ -2,7 +2,6 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
 import { useForm } from "react-hook-form";
 import {
     Form,
@@ -21,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { registerSchema } from "../../constants/registerSchema";
+import { Decoration } from "../components/decoration";
 
 export const SignUpView = () => {
     const router = useRouter();
@@ -188,17 +188,7 @@ export const SignUpView = () => {
                             </div>
                         </form>
                     </Form>
-                    <div className="bg-radial from-green-700 to-green-900 relative hidden md:flex flex-col gap-y-4 items-center justify-center">
-                        <Image
-                            src="/logo.svg"
-                            alt="MeetAI"
-                            width={92}
-                            height={92}
-                        />
-                        <p className="text-2xl font-semibold text-white">
-                            MeetAI
-                        </p>
-                    </div>
+                    <Decoration />
                 </CardContent>
             </Card>
             <div className="text-muted-foreground *:[a]:hover:text-primary text-center text-xs text-balance *:[a]:underline *:[a]:underline-offset-4">
