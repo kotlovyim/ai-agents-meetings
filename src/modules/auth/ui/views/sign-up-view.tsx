@@ -11,6 +11,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
+import { FaGoogle , FaGithub } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { OctagonAlertIcon } from "lucide-react";
@@ -39,6 +40,19 @@ export const SignUpView = () => {
             }
         );
     };
+
+    const onSocial = async (provider: "google" | "github") => {
+            setError(null);
+            setLoading(true);
+            const { error } = await authClient.signIn.social(
+                { provider },
+                {
+                    onSuccess: () => router.push("/dashboard"),
+                    onError: ({ error }) => setError(error.message),
+                    onSettled: () => setLoading(false),
+                }
+            );
+        };
 
     const form = useForm<z.infer<typeof registerSchema>>({
         resolver: zodResolver(registerSchema),
@@ -165,15 +179,17 @@ export const SignUpView = () => {
                                         variant="outline"
                                         className="w-full"
                                         type="button"
+                                        onClick={() => onSocial("google")}
                                     >
-                                        Google
+                                        <FaGoogle className="mr-2 h-4 w-4" />
                                     </Button>
                                     <Button
                                         variant="outline"
                                         className="w-full"
                                         type="button"
+                                        onClick={() => onSocial("github")}
                                     >
-                                        GitHub
+                                        <FaGithub className="mr-2 h-4 w-4" />
                                     </Button>
                                 </div>
                                 <div className="text-center text-sm text-muted-foreground">
