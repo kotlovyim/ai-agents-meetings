@@ -62,11 +62,16 @@ export const verification = pgTable("verification", {
 });
 
 export const agents = pgTable("agents", {
-    id: text("id").primaryKey().$defaultFn(() => nanoid()),
+    id: text("id")
+        .primaryKey()
+        .$defaultFn(() => nanoid()),
     name: text("name").notNull(),
-    userId: text("user_id").notNull().references(() => user.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
     instructions: text("instructions").notNull(),
-    model: text("model").notNull(),
     createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").defaultNow().$onUpdate(() => new Date()),
+    updatedAt: timestamp("updated_at")
+        .defaultNow()
+        .$onUpdate(() => new Date()),
 });
