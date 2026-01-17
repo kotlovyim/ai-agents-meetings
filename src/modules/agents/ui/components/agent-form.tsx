@@ -39,7 +39,7 @@ export const AgentForm = ({
         trpc.agents.create.mutationOptions({
             onSuccess: () => {
                 queryClient.invalidateQueries(
-                    trpc.agents.getMany.queryOptions()
+                    trpc.agents.getMany.queryOptions({})
                 );
                 if (initialValues?.id) {
                     queryClient.invalidateQueries(
@@ -110,6 +110,7 @@ export const AgentForm = ({
                                     <Textarea
                                         placeholder="e.g. You are a helpful meeting assistant..."
                                         {...field}
+                                        className="max-h-[120px] lg:max-h-[320px]"
                                     />
                                 </FormControl>
                                 <FormMessage />
