@@ -38,13 +38,13 @@ export const AgentForm = ({
         trpc.agents.create.mutationOptions({
             onSuccess: () => {
                 queryClient.invalidateQueries(
-                    trpc.agents.getMany.queryOptions({})
+                    trpc.agents.getMany.queryOptions({}),
                 );
                 if (initialValues?.id) {
                     queryClient.invalidateQueries(
                         trpc.agents.getOne.queryOptions({
                             id: initialValues.id,
-                        })
+                        }),
                     );
                 }
                 onSuccess?.();
@@ -52,7 +52,28 @@ export const AgentForm = ({
             onError: (error) => {
                 toast.error(error.message);
             },
-        })
+        }),
+    );
+
+    const updateAgent = useMutation(
+        trpc.agents.update.mutationOptions({
+            onSuccess: () => {
+                queryClient.invalidateQueries(
+                    trpc.agents.getMany.queryOptions({}),
+                );
+                if (initialValues?.id) {
+                    queryClient.invalidateQueries(
+                        trpc.agents.getOne.queryOptions({
+                            id: initialValues.id,
+                        }),
+                    );
+                }
+                onSuccess?.();
+            },
+            onError: (error) => {
+                toast.error(error.message);
+            },
+        }),
     );
 
     const form = useForm<z.infer<typeof agentsInsertSchema>>({
@@ -64,11 +85,11 @@ export const AgentForm = ({
     });
 
     const isEdit = !!initialValues?.id;
-    const isPending = createAgent.isPending;
+    const isPending = isEdit ? updateAgent.isPending : createAgent.isPending;
 
     const onSubmit = async (data: z.infer<typeof agentsInsertSchema>) => {
         if (isEdit) {
-            // Edit logic to be implemented
+            updateAgent.mutate({ id: initialValues!.id, ...data });
         } else {
             createAgent.mutate(data);
         }
