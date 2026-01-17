@@ -11,7 +11,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import { FaGoogle , FaGithub } from "react-icons/fa";
+import { FaGoogle, FaGithub } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { OctagonAlertIcon } from "lucide-react";
@@ -31,10 +31,10 @@ export const SignInView = () => {
     const onSubmit = async (data: z.infer<typeof loginSchema>) => {
         setError(null);
         setLoading(true);
-        const { error } = await authClient.signIn.email(
+        await authClient.signIn.email(
             { email: data.email, password: data.password },
             {
-                onSuccess: () => router.push("/dashboard"),
+                onSuccess: () => router.push("/"),
                 onError: ({ error }) => setError(error.message),
                 onSettled: () => setLoading(false),
             }
@@ -44,10 +44,10 @@ export const SignInView = () => {
     const onSocial = async (provider: "google" | "github") => {
         setError(null);
         setLoading(true);
-        const { error } = await authClient.signIn.social(
+        await authClient.signIn.social(
             { provider },
             {
-                onSuccess: () => router.push("/dashboard"),
+                onSuccess: () => router.push("/"),
                 onError: ({ error }) => setError(error.message),
                 onSettled: () => setLoading(false),
             }
@@ -145,7 +145,7 @@ export const SignInView = () => {
                                     <Button
                                         variant="outline"
                                         onClick={() => onSocial("github")}
-                                        className="w-full" 
+                                        className="w-full"
                                         type="button"
                                     >
                                         <FaGithub className="mr-2 h-4 w-4" />
