@@ -11,7 +11,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import { FaGoogle , FaGithub } from "react-icons/fa";
+import { FaGoogle, FaGithub } from "react-icons/fa";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { OctagonAlertIcon } from "lucide-react";
@@ -31,10 +31,10 @@ export const SignUpView = () => {
     const onSubmit = async (data: z.infer<typeof registerSchema>) => {
         setError(null);
         setLoading(true);
-        const { error } = await authClient.signUp.email(
+        await authClient.signUp.email(
             { email: data.email, password: data.password, name: data.name },
             {
-                onSuccess: () => router.push("/dashboard"),
+                onSuccess: () => router.push("/"),
                 onError: ({ error }) => setError(error.message),
                 onSettled: () => setLoading(false),
             }
@@ -42,17 +42,17 @@ export const SignUpView = () => {
     };
 
     const onSocial = async (provider: "google" | "github") => {
-            setError(null);
-            setLoading(true);
-            const { error } = await authClient.signIn.social(
-                { provider },
-                {
-                    onSuccess: () => router.push("/dashboard"),
-                    onError: ({ error }) => setError(error.message),
-                    onSettled: () => setLoading(false),
-                }
-            );
-        };
+        setError(null);
+        setLoading(true);
+        await authClient.signIn.social(
+            { provider },
+            {
+                onSuccess: () => router.push("/"),
+                onError: ({ error }) => setError(error.message),
+                onSettled: () => setLoading(false),
+            }
+        );
+    };
 
     const form = useForm<z.infer<typeof registerSchema>>({
         resolver: zodResolver(registerSchema),
@@ -75,10 +75,10 @@ export const SignUpView = () => {
                             <div className="flex flex-col gap-6">
                                 <div className="flex flex-col items-center text-center">
                                     <h1 className="text-2xl font-bold">
-                                        Welcome Back!
+                                        Create an Account
                                     </h1>
                                     <p className="text-muted-foreground text-balance">
-                                        Let's get you started
+                                        Let&apos;s get you started
                                     </p>
                                 </div>
                                 <div className="grid gap-3">

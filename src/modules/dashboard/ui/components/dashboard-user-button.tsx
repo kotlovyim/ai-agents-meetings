@@ -6,10 +6,10 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
+    DropdownMenuContent,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
-import { DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
 import { useRouter } from "next/navigation";
 import { ChevronDownIcon, CreditCardIcon, LogOutIcon } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -133,7 +133,7 @@ export const DashboardUserButton = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent
                 align="end"
-                className="w-72"
+                className="w-72  "
                 side="right"
                 sideOffset={8}
             >
