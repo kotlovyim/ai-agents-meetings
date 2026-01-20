@@ -9,6 +9,7 @@ import { EmptyState } from "@/components/empty-state";
 import { useRouter } from "next/navigation";
 import { useMeetingsFilters } from "../../hooks/use-meetings-filter";
 import { DataPagination } from "@/components/data-pagination";
+
 export const MeetingsView = () => {
     const router = useRouter();
     const [filters, setFilters] = useMeetingsFilters();
