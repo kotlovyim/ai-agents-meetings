@@ -1,4 +1,9 @@
-import { createLoader, parseAsInteger, parseAsString, parseAsStringEnum } from "nuqs/server";
+import {
+    createLoader,
+    parseAsInteger,
+    parseAsString,
+    parseAsStringEnum,
+} from "nuqs/server";
 
 import { DEFAULT_PAGE } from "@/constants";
 import { MeetingStatus } from "./types";
