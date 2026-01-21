@@ -25,11 +25,11 @@ export default function Home() {
     const trpc = useTRPC();
 
     const { data: meetings } = useQuery(
-        trpc.meetings.getMany.queryOptions({ pageSize: 100 })
+        trpc.meetings.getMany.queryOptions({ pageSize: 100 }),
     );
 
     const { data: agents } = useQuery(
-        trpc.agents.getMany.queryOptions({ pageSize: 100 })
+        trpc.agents.getMany.queryOptions({ pageSize: 100 }),
     );
 
     const totalMeetings = meetings?.total || 0;
@@ -68,7 +68,8 @@ export default function Home() {
                             )}
                             <div className="flex-1">
                                 <h1 className="text-3xl font-bold mb-1">
-                                    Welcome back, {session?.user.name || "User"}!
+                                    Welcome back, {session?.user.name || "User"}
+                                    !
                                 </h1>
                                 <p className="text-muted-foreground">
                                     {session?.user.email}
@@ -103,7 +104,9 @@ export default function Home() {
                         <VideoIcon className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{totalMeetings}</div>
+                        <div className="text-2xl font-bold">
+                            {totalMeetings}
+                        </div>
                         <p className="text-xs text-muted-foreground mt-1">
                             All time meetings scheduled
                         </p>
@@ -195,11 +198,13 @@ export default function Home() {
                                             </div>
                                             <Badge
                                                 variant={
-                                                    meeting.status === "completed"
+                                                    meeting.status ===
+                                                    "completed"
                                                         ? "default"
-                                                        : meeting.status === "active"
-                                                        ? "destructive"
-                                                        : "secondary"
+                                                        : meeting.status ===
+                                                            "active"
+                                                          ? "destructive"
+                                                          : "secondary"
                                                 }
                                                 className="capitalize"
                                             >
@@ -297,7 +302,10 @@ export default function Home() {
                             </div>
 
                             <Link href="/agents">
-                                <Button variant="ghost" className="w-full gap-2">
+                                <Button
+                                    variant="ghost"
+                                    className="w-full gap-2"
+                                >
                                     View all agents
                                     <ArrowRightIcon className="size-4" />
                                 </Button>

@@ -191,10 +191,24 @@ export async function POST(req: NextRequest) {
     } else if (eventType === "call.recording_ready") {
         const event = payload as CallRecordingReadyEvent;
         const meetingId = event.call_cid.split(":")[1];
+
         if (!meetingId) {
             return NextResponse.json(
                 { message: "Missing meeting ID in call CID" },
                 { status: 400 },
+            );
+        }
+
+        const [updatedMeeting] = await db
+            .update(meetings)
+            .set({ recordingUrl: event.call_recording.url })
+            .where(eq(meetings.id, meetingId))
+            .returning();
+
+        if (!updatedMeeting) {
+            return NextResponse.json(
+                { message: "Meeting not found to update recording" },
+                { status: 404 },
             );
         }
     }

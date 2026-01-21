@@ -15,13 +15,13 @@ const Page = async () => {
     }
 
     const queryClient = getQueryClient();
-    
+
     void queryClient.prefetchQuery(
-        trpc.meetings.getMany.queryOptions({ pageSize: 100 })
+        trpc.meetings.getMany.queryOptions({ pageSize: 100 }),
     );
-    
+
     void queryClient.prefetchQuery(
-        trpc.agents.getMany.queryOptions({ pageSize: 100 })
+        trpc.agents.getMany.queryOptions({ pageSize: 100 }),
     );
 
     return (
