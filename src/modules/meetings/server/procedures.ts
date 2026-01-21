@@ -221,12 +221,10 @@ export const meetingsRouter = createTRPCRouter({
                     generateAvatarUri({ seed: ctx.name, variant: "initials" }),
             },
         ]);
-        const expirationTime = 60 * 60 * 1;
-        const issuedAt = Math.floor(Date.now() / 1000);
+        const validityInSeconds = 60 * 60; // 1 hour
         const token = streamVideo.generateUserToken({
             user_id: ctx.userId,
-            exp: expirationTime,
-            validity_in_seconds: issuedAt,
+            validity_in_seconds: validityInSeconds,
         });
 
         return token;

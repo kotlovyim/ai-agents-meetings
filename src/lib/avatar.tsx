@@ -6,10 +6,7 @@ interface Props {
     variant?: "botttsNeutral" | "initials";
 }
 
-export const generateAvatarUri = ({
-    seed,
-    variant = "botttsNeutral",
-}: Props) => {
+export const generateAvatarUri = ({ seed, variant = "initials" }: Props) => {
     let avatar;
     switch (variant) {
         case "initials":
