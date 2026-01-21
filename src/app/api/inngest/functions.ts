@@ -83,6 +83,7 @@ export const meetingsProcessing = inngest.createFunction(
                 .update(meetings)
                 .set({
                     summary: (output[0] as TextMessage).content as string,
+                    transcript: JSON.stringify(transcriptionWithSpeakers),
                     status: "completed",
                 })
                 .where(eq(meetings.id, event.data.meetingId));

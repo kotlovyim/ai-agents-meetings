@@ -15,6 +15,8 @@ import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { formatDuration } from "@/lib/utils";
 import Markdown from "react-markdown";
+import { TranscriptTab } from "./transcript-tab";
+import { ChatTab } from "./chat-tab";
 
 interface Props {
     data: MeetingGetOne;
@@ -172,7 +174,9 @@ export const CompletedState = ({ data }: Props) => {
                 <TabsContent
                     value="transcript"
                     className="bg-white rounded-lg border"
-                ></TabsContent>
+                >
+                    <TranscriptTab transcript={data.transcript} />
+                </TabsContent>
                 <TabsContent
                     value="recording"
                     className="bg-white rounded-lg border px-4 py-5"
@@ -188,7 +192,9 @@ export const CompletedState = ({ data }: Props) => {
                 <TabsContent
                     value="chat"
                     className="bg-white rounded-lg border"
-                ></TabsContent>
+                >
+                    <ChatTab meetingId={data.id} />
+                </TabsContent>
             </Tabs>
         </div>
     );
