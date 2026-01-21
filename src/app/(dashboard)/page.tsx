@@ -2,6 +2,8 @@ import { auth } from "@/lib/auth";
 import Home from "@/modules/home/ui/views/home-view";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getQueryClient, trpc } from "@/trpc/server";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 const Page = async () => {
     const session = await auth.api.getSession({
@@ -12,7 +14,21 @@ const Page = async () => {
         redirect("/sign-in");
     }
 
-    return <Home />;
+    const queryClient = getQueryClient();
+    
+    void queryClient.prefetchQuery(
+        trpc.meetings.getMany.queryOptions({ pageSize: 100 })
+    );
+    
+    void queryClient.prefetchQuery(
+        trpc.agents.getMany.queryOptions({ pageSize: 100 })
+    );
+
+    return (
+        <HydrationBoundary state={dehydrate(queryClient)}>
+            <Home />
+        </HydrationBoundary>
+    );
 };
 
 export default Page;
