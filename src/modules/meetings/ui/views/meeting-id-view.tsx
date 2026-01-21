@@ -38,7 +38,6 @@ export const MeetingIdView = ({ meetingId }: Props) => {
                     trpc.meetings.getMany.queryOptions({}),
                 );
                 router.push("/meetings");
-                4;
                 toast.success("Meeting removed successfully");
             },
             onError: (error) => {
