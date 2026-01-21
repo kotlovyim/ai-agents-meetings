@@ -1,5 +1,5 @@
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
-import { agents } from "@/db/schema";
+import { agents, meetings } from "@/db/schema";
 import { db } from "@/db";
 import { agentsInsertSchema, agentsUpdateSchema } from "../schemas";
 import z from "zod";
@@ -19,7 +19,7 @@ export const agentsRouter = createTRPCRouter({
             const [removedAgent] = await db
                 .delete(agents)
                 .where(
-                    and(eq(agents.id, input.id), eq(agents.userId, ctx.userId))
+                    and(eq(agents.id, input.id), eq(agents.userId, ctx.userId)),
                 )
                 .returning();
             if (!removedAgent) {
@@ -37,7 +37,7 @@ export const agentsRouter = createTRPCRouter({
                 .update(agents)
                 .set(input)
                 .where(
-                    and(eq(agents.id, input.id), eq(agents.userId, ctx.userId))
+                    and(eq(agents.id, input.id), eq(agents.userId, ctx.userId)),
                 )
                 .returning();
             if (!updatedAgent) {
@@ -54,12 +54,14 @@ export const agentsRouter = createTRPCRouter({
             const [existingAgent] = await db
                 .select({
                     ...getTableColumns(agents),
-                    meetingsCount: sql<number>`5`,
+                    meetingsCount: count(meetings.id),
                 })
                 .from(agents)
+                .leftJoin(meetings, eq(agents.id, meetings.agentId))
                 .where(
-                    and(eq(agents.id, input.id), eq(agents.userId, ctx.userId))
-                );
+                    and(eq(agents.id, input.id), eq(agents.userId, ctx.userId)),
+                )
+                .groupBy(agents.id);
             if (!existingAgent) {
                 throw new TRPCError({
                     code: "NOT_FOUND",
@@ -78,22 +80,24 @@ export const agentsRouter = createTRPCRouter({
                     .max(MAX_PAGE_SIZE)
                     .default(DEFAULT_PAGE_SIZE),
                 search: z.string().nullish(),
-            })
+            }),
         )
         .query(async ({ input, ctx }) => {
             const { search, page, pageSize } = input;
             const data = await db
                 .select({
                     ...getTableColumns(agents),
-                    meetingsCount: sql<number>`5`,
+                    meetingsCount: count(meetings.id),
                 })
                 .from(agents)
+                .leftJoin(meetings, eq(agents.id, meetings.agentId))
                 .where(
                     and(
                         eq(agents.userId, ctx.userId),
-                        search ? ilike(agents.name, `%${search}%`) : undefined
-                    )
+                        search ? ilike(agents.name, `%${search}%`) : undefined,
+                    ),
                 )
+                .groupBy(agents.id)
                 .orderBy(desc(agents.createdAt))
                 .limit(pageSize)
                 .offset((page - 1) * pageSize);
@@ -103,8 +107,8 @@ export const agentsRouter = createTRPCRouter({
                 .where(
                     and(
                         eq(agents.userId, ctx.userId),
-                        search ? ilike(agents.name, `%${search}%`) : undefined
-                    )
+                        search ? ilike(agents.name, `%${search}%`) : undefined,
+                    ),
                 );
             const totalPages = Math.ceil(total.count / pageSize);
             return { items: data, total: total.count, totalPages };

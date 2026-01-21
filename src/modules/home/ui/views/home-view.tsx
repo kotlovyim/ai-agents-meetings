@@ -4,8 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { GeneratedAvatar } from "@/components/generated-avatar";
+import { LoadingState } from "@/components/loading-state";
+import { ErrorState } from "@/components/error-state";
 import { useTRPC } from "@/trpc/client";
-import { useQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
     VideoIcon,
     BotIcon,
@@ -24,27 +26,28 @@ export default function Home() {
     const { data: session } = authClient.useSession();
     const trpc = useTRPC();
 
-    const { data: meetings } = useQuery(
+    const { data: meetings } = useSuspenseQuery(
         trpc.meetings.getMany.queryOptions({ pageSize: 100 }),
     );
 
-    const { data: agents } = useQuery(
+    const { data: agents } = useSuspenseQuery(
         trpc.agents.getMany.queryOptions({ pageSize: 100 }),
     );
 
-    const totalMeetings = meetings?.total || 0;
-    const totalAgents = agents?.total || 0;
-    const completedMeetings =
-        meetings?.items.filter((m) => m.status === "completed").length || 0;
-    const upcomingMeetings =
-        meetings?.items.filter((m) => m.status === "upcoming").length || 0;
+    const totalMeetings = meetings.total;
+    const totalAgents = agents.total;
+    const completedMeetings = meetings.items.filter(
+        (m) => m.status === "completed",
+    ).length;
+    const upcomingMeetings = meetings.items.filter(
+        (m) => m.status === "upcoming",
+    ).length;
 
-    const totalDuration =
-        meetings?.items
-            .filter((m) => m.duration)
-            .reduce((acc, m) => acc + (m.duration || 0), 0) || 0;
+    const totalDuration = meetings.items
+        .filter((m) => m.duration)
+        .reduce((acc, m) => acc + (m.duration || 0), 0);
 
-    const recentMeetings = meetings?.items.slice(0, 3) || [];
+    const recentMeetings = meetings.items.slice(0, 3);
 
     return (
         <div className="flex-1 px-4 py-4 md:px-8 flex flex-col gap-y-6 overflow-y-auto">
@@ -317,3 +320,21 @@ export default function Home() {
         </div>
     );
 }
+
+export const HomeViewLoading = () => {
+    return (
+        <LoadingState
+            title="Loading dashboard"
+            description="Please wait while we load your dashboard..."
+        />
+    );
+};
+
+export const HomeViewError = () => {
+    return (
+        <ErrorState
+            title="Failed to load dashboard"
+            description="An error occurred while loading your dashboard. Please try again."
+        />
+    );
+};

@@ -44,7 +44,7 @@ export const DashboardNavbar = () => {
                 >
                     <SearchIcon className="mr-2 h-4 w-4" />
                     Search
-                    <kbd className="ml-auto pointer-events-none inline-flex select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+                    <kbd className="ml-auto pointer-events-none inline-flex select-none items-center gap-1 rounded border bg-muted px-1.5 py-1 font-mono text-[10px] font-medium text-muted-foreground">
                         <span className="text-xs">&#8984;</span>K
                     </kbd>
                 </Button>
