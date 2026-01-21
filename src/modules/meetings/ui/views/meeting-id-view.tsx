@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useConfirm } from "@/modules/agents/hooks/use-confirm";
 import { toast } from "sonner";
 import { useState } from "react";
+import { UpdateMeetingDialog } from "../components/update-meeting-dialog";
 
 interface Props {
     meetingId: string;
@@ -47,7 +48,7 @@ export const MeetingIdView = ({ meetingId }: Props) => {
         `Are you sure you want to remove this meeting?`,
     );
 
-    const [agentUpdateDialog, setAgentUpdateDialog] = useState(false);
+    const [meetingUpdateDialog, setMeetingUpdateDialog] = useState(false);
 
     const handleRemoveMeeting = async () => {
         const confirmed = await confirm();
@@ -58,12 +59,17 @@ export const MeetingIdView = ({ meetingId }: Props) => {
 
     return (
         <>
+            <UpdateMeetingDialog
+                open={meetingUpdateDialog}
+                onOpenChange={setMeetingUpdateDialog}
+                initialValues={data!}
+            />
             <ConfirmDialog />
             <div className="flex-1 py-4 px-4 md:px-8 flex flex-col gap-y-4">
                 <MeetingIdViewHeader
                     meetingId={meetingId}
                     meetingName={data?.name ?? ""}
-                    onEdit={() => {}}
+                    onEdit={() => setMeetingUpdateDialog(true)}
                     onRemove={handleRemoveMeeting}
                 />
                 Meeting ID View for {meetingId}
