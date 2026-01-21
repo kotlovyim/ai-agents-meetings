@@ -13,17 +13,8 @@ import {
     VideoIcon,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import humanizeDuration from "humanize-duration";
 import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-
-function formatDuration(seconds: number): string {
-    return humanizeDuration(seconds * 1000, {
-        largest: 2,
-        round: true,
-        units: ["h", "m", "s"],
-    });
-}
+import { cn, formatDuration } from "@/lib/utils";
 
 const statusIconMap = {
     upcoming: ClockArrowDownIcon,
