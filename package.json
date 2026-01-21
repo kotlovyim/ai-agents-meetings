@@ -8,12 +8,14 @@
         "start": "next start",
         "lint": "next lint",
         "db:push": "drizzle-kit push",
-        "db:studio": "drizzle-kit studio"
+        "db:studio": "drizzle-kit studio",
+        "dev:webhook": "ngrok http --url=gudrun-unsuffusive-machelle.ngrok-free.dev 3000"
     },
     "dependencies": {
         "@dicebear/collection": "^9.2.4",
         "@dicebear/core": "^9.2.4",
         "@hookform/resolvers": "^5.2.2",
+        "@inngest/agent-kit": "^0.13.2",
         "@neondatabase/serverless": "^1.0.1",
         "@radix-ui/react-accordion": "^1.2.12",
         "@radix-ui/react-alert-dialog": "^1.1.15",
@@ -41,6 +43,7 @@
         "@radix-ui/react-toggle": "^1.1.10",
         "@radix-ui/react-toggle-group": "^1.1.11",
         "@radix-ui/react-tooltip": "^1.2.8",
+        "@stream-io/openai-realtime-api": "^0.3.3",
         "@stream-io/video-react-sdk": "^1.31.4",
         "@tanstack/react-query": "^5.90.2",
         "@tanstack/react-table": "^8.21.3",
@@ -57,7 +60,9 @@
         "drizzle-orm": "^0.44.5",
         "embla-carousel-react": "^8.6.0",
         "humanize-duration": "^3.33.2",
+        "inngest": "^3.49.3",
         "input-otp": "^1.4.2",
+        "jsonl-parse-stringify": "^1.0.3",
         "lucide-react": "^0.544.0",
         "nanoid": "^5.1.6",
         "next": "^15.5.9",

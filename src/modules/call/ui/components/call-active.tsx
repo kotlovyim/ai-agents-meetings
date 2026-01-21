@@ -9,7 +9,7 @@ interface Props {
 
 export const CallActive = ({ onLeave, meetingName }: Props) => {
     return (
-        <div className="flex flex-col h-full justify-between p-4 text-white">
+        <div className="flex flex-col h-full justify-between p-4 text-white bg-[#0a0a0a]">
             <div className="bg-[#101213] rounded-full p-4 flex items-center gap-4">
                 <Link
                     href="/"
@@ -20,7 +20,7 @@ export const CallActive = ({ onLeave, meetingName }: Props) => {
                 <h4 className="text-base">{meetingName}</h4>
             </div>
             <SpeakerLayout />
-            <div className="bg-[#101213]">
+            <div className="bg-[#101213] rounded-lg">
                 <CallControls onLeave={onLeave} />
             </div>
         </div>
