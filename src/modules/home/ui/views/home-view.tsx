@@ -7,6 +7,7 @@ import { GeneratedAvatar } from "@/components/generated-avatar";
 import { LoadingState } from "@/components/loading-state";
 import { ErrorState } from "@/components/error-state";
 import { useTRPC } from "@/trpc/client";
+import Image from "next/image";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
     VideoIcon,
@@ -57,9 +58,11 @@ export default function Home() {
                     <div className="flex flex-col md:flex-row gap-6">
                         <div className="flex items-center gap-4 flex-1">
                             {session?.user.image ? (
-                                <img
+                                <Image
                                     src={session.user.image}
                                     alt={session.user.name || "User"}
+                                    width={80}
+                                    height={80}
                                     className="w-20 h-20 rounded-full"
                                 />
                             ) : (

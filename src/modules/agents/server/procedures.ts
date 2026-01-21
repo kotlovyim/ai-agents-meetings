@@ -3,7 +3,7 @@ import { agents, meetings } from "@/db/schema";
 import { db } from "@/db";
 import { agentsInsertSchema, agentsUpdateSchema } from "../schemas";
 import z from "zod";
-import { eq, getTableColumns, sql, ilike, desc, count, and } from "drizzle-orm";
+import { eq, getTableColumns, ilike, desc, count, and } from "drizzle-orm";
 import {
     DEFAULT_PAGE,
     DEFAULT_PAGE_SIZE,
