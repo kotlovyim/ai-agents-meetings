@@ -78,6 +78,7 @@
     },
     "devDependencies": {
         "@eslint/eslintrc": "^3",
+        "@stream-io/node-sdk": "^0.7.33",
         "@tailwindcss/postcss": "^4",
         "@types/humanize-duration": "^3.27.4",
         "@types/node": "^20",

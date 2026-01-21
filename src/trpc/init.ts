@@ -32,5 +32,12 @@ export const protectedProcedure = baseProcedure.use(async ({ ctx, next }) => {
             message: "User is not authorized",
         });
     }
-    return next({ ctx: { ...ctx, userId: session.user.id } });
+    return next({
+        ctx: {
+            ...ctx,
+            userId: session.user.id,
+            name: session.user.name,
+            image: session.user.image,
+        },
+    });
 });
