@@ -26,6 +26,7 @@ export const UpcomingState = ({
                     variant="secondary"
                     onClick={onCancelMeeting}
                     disabled={isCancelling}
+                    className="w-full lg:w-auto"
                 >
                     <BanIcon /> Cancel meeting
                 </Button>
