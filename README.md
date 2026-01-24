@@ -1,680 +1,696 @@
-# Технічне рішення
+# 🤖 Zvjazok
 
-## Загальна структура системи
+> A modern platform for hosting AI-powered video meetings with intelligent agents that can interact, transcribe, and summarize conversations in real-time.
 
-**AI Agents Meetings** - це сучасна веб-платформа для проведення онлайн-зустрічей з розумними AI-помічниками.
+[![Next.js](https://img.shields.io/badge/Next.js-15.5-black?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![tRPC](https://img.shields.io/badge/tRPC-11.6-2596be?logo=trpc)](https://trpc.io/)
+[![Drizzle ORM](https://img.shields.io/badge/Drizzle-0.44-C5F74F?logo=drizzle)](https://orm.drizzle.team/)
 
-### Що робить наша система?
+## 📋 Table of Contents
 
-Уявіть собі Zoom або Google Meet, але з розумним помічником, який:
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Technology Stack](#technology-stack)
+- [Architecture](#architecture)
+- [Database Schema](#database-schema)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+- [Environment Variables](#environment-variables)
+- [Development](#development)
+- [API Routes](#api-routes)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
 
-- 📹 Бере участь у ваших зустрічах
-- 🎤 Слухає розмову та робить нотатки
-- 📝 Автоматично створює детальне резюме після зустрічі
-- 🤖 Може відповідати на запитання та допомагати під час зустрічі
+## 🎯 Overview
 
-### Як це працює?
+Zvjazok is a next-generation video conferencing platform that integrates AI agents into virtual meetings. The platform enables users to create custom AI agents with specific instructions, schedule meetings, and have AI participants that can listen, transcribe, respond, and provide insights during video calls.
 
-Система складається з трьох основних частин:
+### What Makes This Special?
+
+- **AI Agent Integration**: Create and configure AI agents with custom instructions and personalities
+- **Real-time Video & Audio**: Powered by Stream Video SDK for high-quality video conferencing
+- **Live Transcription**: Automatic transcription of meetings using OpenAI Realtime API
+- **Intelligent Summaries**: Post-meeting AI-generated summaries and insights
+- **Background Processing**: Asynchronous meeting processing with Inngest
+- **Type-Safe APIs**: End-to-end type safety with tRPC
+
+## ✨ Key Features
+
+### 🤖 AI Agent Management
+- Create custom AI agents with personalized instructions
+- Configure agent behavior and communication style
+- Reusable agents across multiple meetings
+- Agent performance tracking
+
+### 📹 Video Meetings
+- High-quality video conferencing powered by Stream
+- Real-time audio and video streaming
+- Multiple participants support
+- Meeting recording capabilities
+
+### 📝 Meeting Management
+- Schedule and organize meetings
+- Assign AI agents to meetings
+- Track meeting status (upcoming, active, completed, processing, cancelled)
+- View meeting history and recordings
+
+### 🎙️ Transcription & Analysis
+- Real-time speech-to-text transcription
+- AI-powered meeting summaries
+- Conversation analysis and insights
+- Searchable meeting transcripts
+
+### 🔐 Authentication & Authorization
+- Secure authentication with Better Auth
+- Email/password and social login support
+- Session management
+- Protected routes and API endpoints
+
+### 💳 Subscription Management
+- Tiered pricing plans
+- Usage tracking
+- Upgrade flow
+- Stripe integration (webhook support)
+
+## 🛠️ Technology Stack
+
+### Core Framework
+- **[Next.js 15.5](https://nextjs.org/)** - React framework with App Router
+- **[React 19](https://react.dev/)** - UI library
+- **[TypeScript](https://www.typescriptlang.org/)** - Type-safe development
+
+### Backend & API
+- **[tRPC 11.6](https://trpc.io/)** - End-to-end typesafe APIs
+- **[Drizzle ORM 0.44](https://orm.drizzle.team/)** - TypeScript ORM
+- **[PostgreSQL](https://www.postgresql.org/)** - Database (via Neon)
+- **[Better Auth](https://www.better-auth.com/)** - Authentication
+
+### AI & Real-time
+- **[OpenAI API](https://openai.com/)** - AI language models
+- **[@stream-io/openai-realtime-api](https://getstream.io/)** - Real-time audio transcription
+- **[@stream-io/video-react-sdk](https://getstream.io/)** - Video conferencing
+- **[Inngest](https://www.inngest.com/)** - Background job processing
+- **[@inngest/agent-kit](https://www.inngest.com/)** - AI agent framework
+
+### UI & Styling
+- **[Tailwind CSS 4](https://tailwindcss.com/)** - Utility-first CSS
+- **[Radix UI](https://www.radix-ui.com/)** - Accessible component primitives
+- **[shadcn/ui](https://ui.shadcn.com/)** - Re-usable components
+- **[Lucide Icons](https://lucide.dev/)** - Icon library
+- **[React Hook Form](https://react-hook-form.com/)** - Form management
+- **[Zod](https://zod.dev/)** - Schema validation
+
+### State & Data Management
+- **[TanStack Query](https://tanstack.com/query)** - Data fetching & caching
+- **[TanStack Table](https://tanstack.com/table)** - Table component
+- **[nuqs](https://nuqs.47ng.com/)** - URL state management
+
+### Developer Experience
+- **[ESLint](https://eslint.org/)** - Code linting
+- **[Drizzle Kit](https://orm.drizzle.team/kit-docs/overview)** - Database migrations
+- **[tsx](https://github.com/privatenumber/tsx)** - TypeScript execution
+- **[ngrok](https://ngrok.com/)** - Local webhook testing
+
+## 🏗️ Architecture
+
+### System Architecture
 
 ```
-┌─────────────────────────────────────────────────────┐
-│              1. Те, що бачить користувач            │
-│           (Веб-сайт з кнопками та формами)          │
-│                                                     │
-│  🖥️ Красивий інтерфейс                              │
-│  📱 Працює на телефоні та комп'ютері                │
-│  🎨 Темна та світла тема                            │
-└─────────────────────────────────────────────────────┘
-                         ↓ ↑
-              Інтернет (обмін даними)
-                         ↓ ↑
-┌─────────────────────────────────────────────────────┐
-│           2. Мозок системи (Сервер)                 │
-│        (Обробляє запити та керує логікою)           │
-│                                                     │
-│  🔐 Перевіряє, хто ви                               │
-│  🤖 Керує AI-агентами                               │
-│  📊 Обробляє бізнес-логіку                          │
-│  🎥 Організовує відеозустрічі                       │
-│  📝 Генерує резюме зустрічей                        │
-└─────────────────────────────────────────────────────┘
-                         ↓ ↑
-              Збереження даних
-                         ↓ ↑
-┌─────────────────────────────────────────────────────┐
-│         3. Сховище даних (База даних)               │
-│          (Зберігає всю інформацію)                  │
-│                                                     │
-│  👤 Дані користувачів                               │
-│  🤖 Налаштування AI-агентів                         │
-│  📅 Історія зустрічей та записи                     │
-└─────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                         Client Layer                        │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │   Next.js    │  │   React 19   │  │  Tailwind    │       │
+│  │   App Router │  │   Components │  │     CSS      │       │
+│  └──────────────┘  └──────────────┘  └──────────────┘       │
+└─────────────────────────────────────────────────────────────┘
+                            ↕
+┌─────────────────────────────────────────────────────────────┐
+│                      API Layer (tRPC)                       │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │   Agents     │  │   Meetings   │  │    Auth      │       │
+│  │   Router     │  │   Router     │  │   Endpoints  │       │
+│  └──────────────┘  └──────────────┘  └──────────────┘       │
+└─────────────────────────────────────────────────────────────┘
+                            ↕
+┌─────────────────────────────────────────────────────────────┐
+│                      Business Logic                         │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │   Server     │  │   Inngest    │  │  Stream      │       │
+│  │   Actions    │  │   Functions  │  │  Video SDK   │       │
+│  └──────────────┘  └──────────────┘  └──────────────┘       │
+└─────────────────────────────────────────────────────────────┘
+                            ↕
+┌─────────────────────────────────────────────────────────────┐
+│                       Data Layer                            │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
+│  │  Drizzle ORM │  │  PostgreSQL  │  │  Better Auth │       │
+│  │              │  │   (Neon)     │  │  Sessions    │       │
+│  └──────────────┘  └──────────────┘  └──────────────┘       │
+└─────────────────────────────────────────────────────────────┘
+                            ↕
+┌─────────────────────────────────────────────────────────────┐
+│                    External Services                        │
+│  ┌──────────────┐  ┌──────────────┐                         │
+│  │   OpenAI     │  │  Stream.io   │                         │
+│  │     API      │  │    Video     │                         │
+│  └──────────────┘  └──────────────┘                         │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-### Модульна побудова
+### Application Flow
 
-Проєкт розділений на логічні частини (модулі), кожна відповідає за свою функцію:
+#### 1. **User Authentication Flow**
+```
+User → Sign In/Up Page → Better Auth → Database → Session Created → Dashboard
+```
 
-**Основні модулі:**
+#### 2. **Agent Creation Flow**
+```
+User → Agent Form → tRPC Mutation → Validation (Zod) → Database → Agent Created
+```
 
-- 🔐 **auth** - Вхід у систему (реєстрація, логін через Google/GitHub)
-- 🤖 **agents** - Створення та налаштування AI-помічників
-- 📅 **meetings** - Планування та проведення зустрічей
-- 🏠 **dashboard** - Головна сторінка з усією інформацією
+#### 3. **Meeting Creation Flow**
+```
+User → Meeting Form → Select Agent → tRPC Mutation → Database → Stream Call Created
+```
+
+#### 4. **Live Meeting Flow**
+```
+User Joins → Stream Video Call → OpenAI Realtime API → Live Transcription
+                                                      → AI Agent Response
+                                                      → Recording Started
+```
+
+#### 5. **Post-Meeting Processing Flow**
+```
+Meeting Ends → Inngest Event Triggered → Background Job
+                                       → Fetch Recording
+                                       → Generate Transcript
+                                       → AI Summary Generation
+                                       → Database Update
+                                       → User Notification
+```
+
+### Key Design Patterns
+
+- **Module-based Architecture**: Features organized by domain (agents, meetings, auth)
+- **Server Components**: Leveraging React Server Components for optimal performance
+- **API Route Handlers**: RESTful endpoints for webhooks and external integrations
+- **Background Jobs**: Asynchronous processing with Inngest for heavy operations
+- **Type Safety**: End-to-end type safety from database to UI
+- **Component Library**: Reusable UI components with consistent design system
+
+## 🗄️ Database Schema
+
+### Core Tables
+
+#### Users & Authentication
+```typescript
+user
+  ├── id (PK)
+  ├── name
+  ├── email (unique)
+  ├── emailVerified
+  ├── image
+  ├── createdAt
+  └── updatedAt
+
+session
+  ├── id (PK)
+  ├── userId (FK → user.id)
+  ├── token (unique)
+  ├── expiresAt
+  ├── ipAddress
+  ├── userAgent
+  ├── createdAt
+  └── updatedAt
+
+account
+  ├── id (PK)
+  ├── userId (FK → user.id)
+  ├── providerId
+  ├── accountId
+  ├── accessToken
+  ├── refreshToken
+  ├── idToken
+  └── ... (OAuth fields)
+```
+
+#### Agents
+```typescript
+agents
+  ├── id (PK, nanoid)
+  ├── userId (FK → user.id)
+  ├── name
+  ├── instructions
+  ├── createdAt
+  └── updatedAt
+```
+
+#### Meetings
+```typescript
+meetings
+  ├── id (PK, nanoid)
+  ├── userId (FK → user.id)
+  ├── agentId (FK → agents.id)
+  ├── name
+  ├── status (enum: upcoming, active, completed, processing, cancelled)
+  ├── startedAt
+  ├── endedAt
+  ├── transcriptUrl
+  ├── recordingUrl
+  ├── summary
+  ├── transcript
+  ├── createdAt
+  └── updatedAt
+```
+
+### Relationships
+- **One-to-Many**: User → Agents, User → Meetings
+- **One-to-Many**: Agent → Meetings
+- **Cascade Delete**: Deleting a user removes all their agents and meetings
+- **Cascade Delete**: Deleting an agent removes all associated meetings
+
+## 📁 Project Structure
+
+```
+ai-agents-meetings/
+├── src/
+│   ├── app/                      # Next.js App Router
+│   │   ├── (auth)/              # Authentication routes
+│   │   │   ├── sign-in/         # Sign in page
+│   │   │   └── sign-up/         # Sign up page
+│   │   ├── (dashboard)/         # Protected dashboard routes
+│   │   │   ├── page.tsx         # Dashboard home
+│   │   │   ├── agents/          # Agent management
+│   │   │   ├── meetings/        # Meeting management
+│   │   │   └── upgrade/         # Subscription upgrade
+│   │   ├── call/[meetingId]/    # Live meeting interface
+│   │   ├── api/                 # API routes
+│   │   │   ├── auth/            # Auth endpoints
+│   │   │   ├── chat/            # Chat API
+│   │   │   ├── inngest/         # Inngest webhook
+│   │   │   ├── trpc/            # tRPC handler
+│   │   │   └── webhook/         # External webhooks (Stripe)
+│   │   ├── globals.css          # Global styles
+│   │   └── layout.tsx           # Root layout
+│   │
+│   ├── modules/                 # Feature modules
+│   │   ├── agents/              # Agent feature
+│   │   │   ├── hooks/           # Agent-specific hooks
+│   │   │   ├── server/          # Server actions
+│   │   │   ├── ui/              # UI components
+│   │   │   ├── schemas.ts       # Zod schemas
+│   │   │   ├── types.ts         # TypeScript types
+│   │   │   └── params.ts        # URL params
+│   │   ├── meetings/            # Meeting feature
+│   │   ├── auth/                # Authentication
+│   │   ├── call/                # Video call
+│   │   ├── dashboard/           # Dashboard
+│   │   ├── home/                # Home page
+│   │   └── upgrade/             # Upgrade flow
+│   │
+│   ├── components/              # Shared components
+│   │   ├── ui/                  # shadcn/ui components
+│   │   ├── data-table.tsx       # Reusable data table
+│   │   ├── data-pagination.tsx  # Pagination component
+│   │   ├── command-select.tsx   # Command palette select
+│   │   ├── responsive-dialog.tsx # Responsive modal
+│   │   ├── empty-state.tsx      # Empty state UI
+│   │   ├── error-state.tsx      # Error state UI
+│   │   ├── loading-state.tsx    # Loading state UI
+│   │   └── generated-avatar.tsx # Avatar generator
+│   │
+│   ├── db/                      # Database
+│   │   ├── index.ts             # DB client
+│   │   └── schema.ts            # Drizzle schema
+│   │
+│   ├── lib/                     # Utilities
+│   │   ├── auth.ts              # Better Auth config
+│   │   ├── auth-client.ts       # Auth client
+│   │   ├── stream-video.ts      # Stream SDK setup
+│   │   ├── utils.ts             # Helper functions
+│   │   └── avatar.tsx           # Avatar utilities
+│   │
+│   ├── trpc/                    # tRPC setup
+│   │   ├── init.ts              # tRPC initialization
+│   │   ├── client.tsx           # Client provider
+│   │   ├── server.tsx           # Server client
+│   │   ├── query-client.ts      # TanStack Query client
+│   │   └── routers/             # API routers
+│   │       └── _app.ts          # Root router
+│   │
+│   ├── inngest/                 # Background jobs
+│   │   └── client.ts            # Inngest client
+│   │
+│   ├── hooks/                   # Global hooks
+│   │   └── use-mobile.ts        # Responsive hook
+│   │
+│   └── constants.ts             # Global constants
+│
+├── public/                      # Static assets
+├── drizzle/                     # Migration files
+├── drizzle.config.ts            # Drizzle configuration
+├── next.config.ts               # Next.js configuration
+├── tsconfig.json                # TypeScript configuration
+├── tailwind.config.ts           # Tailwind configuration
+├── postcss.config.mjs           # PostCSS configuration
+├── eslint.config.mjs            # ESLint configuration
+├── components.json              # shadcn/ui configuration
+└── package.json                 # Dependencies
+```
+
+### Module Structure Pattern
+
+Each feature module follows a consistent structure:
+
+```
+modules/[feature]/
+├── hooks/           # React hooks for this feature
+├── server/          # Server actions and utilities
+├── ui/              # UI components
+│   ├── components/  # Feature-specific components
+│   ├── forms/       # Form components
+│   └── views/       # Page views
+├── schemas.ts       # Zod validation schemas
+├── types.ts         # TypeScript types
+└── params.ts        # URL search params definitions
+```
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Node.js**: 20.x or higher
+- **npm/pnpm/yarn**: Package manager
+- **PostgreSQL**: Database (or use Neon/Supabase)
+- **OpenAI API Key**: For AI features
+- **Stream.io Account**: For video functionality
+- **Inngest Account**: For background jobs
+
+### Installation
+
+1. **Clone the repository**
+```bash
+git clone https://github.com/kotlovyim/zvjazok.git
+cd zvjazok
+```
+
+2. **Install dependencies**
+```bash
+npm install
+# or
+pnpm install
+# or
+yarn install
+```
+
+3. **Set up environment variables**
+```bash
+cp .env.example .env.local
+```
+
+4. **Configure your `.env.local`** (see [Environment Variables](#environment-variables))
+
+5. **Set up the database**
+```bash
+npm run db:push
+```
+
+6. **Run the development server**
+```bash
+npm run dev
+```
+
+7. **Open your browser**
+```
+http://localhost:3000
+```
+
+## 🔐 Environment Variables
+
+Create a `.env.local` file in the root directory:
+
+```bash
+# Database
+DATABASE_URL="postgresql://user:password@host:5432/database"
+
+# Better Auth
+BETTER_AUTH_SECRET="your-secret-key-here"
+BETTER_AUTH_URL="http://localhost:3000"
+
+# OpenAI
+OPENAI_API_KEY="sk-..."
+
+# Stream Video
+NEXT_PUBLIC_STREAM_VIDEO_API_KEY="your-stream-api-key"
+STREAM_VIDEO_SECRET_KEY="your-stream-secret-key"
+
+# Inngest
+INNGEST_EVENT_KEY="your-inngest-event-key"
+INNGEST_SIGNING_KEY="your-inngest-signing-key"
+
+# Stripe (Optional)
+STRIPE_SECRET_KEY="sk_test_..."
+STRIPE_WEBHOOK_SECRET="whsec_..."
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_..."
+
+# Ngrok (for local webhook testing)
+NGROK_URL="https://your-subdomain.ngrok-free.dev"
+```
+
+### Getting API Keys
+
+#### OpenAI
+1. Visit [platform.openai.com](https://platform.openai.com/)
+2. Create an account and navigate to API keys
+3. Generate a new secret key
+
+#### Stream.io
+1. Visit [getstream.io](https://getstream.io/)
+2. Create an account and select Video & Audio
+3. Create an app and copy the API key and secret
+
+#### Inngest
+1. Visit [inngest.com](https://www.inngest.com/)
+2. Create an account and workspace
+3. Copy the event key and signing key from settings
+
+#### Stripe (Optional)
+1. Visit [stripe.com](https://stripe.com/)
+2. Create an account
+3. Get API keys from Developers → API keys
+
+## 💻 Development
+
+### Available Scripts
+
+```bash
+# Development
+npm run dev              # Start development server
+npm run build           # Build for production
+npm run start           # Start production server
+npm run lint            # Run ESLint
+
+# Database
+npm run db:push         # Push schema changes to database
+npm run db:studio       # Open Drizzle Studio (database GUI)
+
+# Webhooks
+npm run dev:webhook     # Start ngrok tunnel for webhook testing
+```
+
+### Development Workflow
+
+1. **Start the development server**
+```bash
+npm run dev
+```
+
+2. **For webhook testing (parallel terminal)**
+```bash
+npm run dev:webhook
+```
+
+3. **Access Drizzle Studio for database management**
+```bash
+npm run db:studio
+```
+
+### Database Migrations
+
+```bash
+# Push schema changes to database
+npm run db:push
+
+# Generate migration files (if needed)
+npx drizzle-kit generate
+
+# Apply migrations
+npx drizzle-kit migrate
+```
+
+### Code Style
+
+- **TypeScript**: Strict mode enabled
+- **ESLint**: Next.js recommended rules
+- **Formatting**: Consistent code style
+- **Components**: PascalCase for components, camelCase for functions
+- **Files**: kebab-case for files, PascalCase for component files
+
+## 🛣️ API Routes
+
+### tRPC Endpoints
+
+All tRPC endpoints are available at `/api/trpc/[trpc]`
+
+#### Agents Router
+- `agents.getMany` - List all user's agents with pagination
+- `agents.getOne` - Get single agent by ID
+- `agents.create` - Create new agent
+- `agents.update` - Update agent
+- `agents.delete` - Delete agent
+
+#### Meetings Router
+- `meetings.getMany` - List all user's meetings with pagination
+- `meetings.getOne` - Get single meeting by ID
+- `meetings.create` - Create new meeting
+- `meetings.update` - Update meeting
+- `meetings.delete` - Delete meeting
+- `meetings.getStats` - Get meeting statistics
+
+### REST Endpoints
+
+#### Authentication
+- `POST /api/auth/sign-in` - Sign in user
+- `POST /api/auth/sign-up` - Register new user
+- `POST /api/auth/sign-out` - Sign out user
+- `GET /api/auth/session` - Get current session
+
+#### Chat
+- `POST /api/chat` - Chat with AI agent
+
+#### Webhooks
+- `POST /api/webhook` - Stripe webhook handler
+- `POST /api/inngest` - Inngest webhook handler
+
+## 🎨 UI Components
+
+### Component Library (shadcn/ui)
+
+The project uses [shadcn/ui](https://ui.shadcn.com/) components:
+
+- **Layout**: Card, Separator, Sidebar, Tabs
+- **Forms**: Input, Textarea, Select, Checkbox, Switch, Radio
+- **Data Display**: Table, Badge, Avatar, Progress
+- **Feedback**: Alert, Toast (Sonner), Dialog, Sheet
+- **Navigation**: Breadcrumb, Command, Navigation Menu, Pagination
+- **Overlay**: Dialog, Drawer, Popover, Tooltip, Hover Card
+- **Charts**: Recharts integration
+
+### Custom Components
+
+- **DataTable**: Reusable table with sorting, filtering, and pagination
+- **DataPagination**: Pagination controls for tables
+- **CommandSelect**: Searchable select with command palette
+- **ResponsiveDialog**: Mobile-responsive modal (Dialog/Drawer)
+- **GeneratedAvatar**: Dynamic avatar generation with DiceBear
+- **EmptyState**: Consistent empty state UI
+- **ErrorState**: Error display component
+- **LoadingState**: Loading skeleton component
+
+## 🌐 Deployment
+
+### Vercel (Recommended)
+
+1. **Push code to GitHub**
+
+2. **Import to Vercel**
+   - Visit [vercel.com](https://vercel.com/)
+   - Import your GitHub repository
+   - Configure environment variables
+   - Deploy
+
+3. **Configure environment variables** in Vercel dashboard
+
+4. **Set up webhooks**
+   - Update `BETTER_AUTH_URL` to your production URL
+   - Configure Stripe webhook with production URL
+   - Update Inngest environment
+
+### Manual Deployment
+
+```bash
+# Build the application
+npm run build
+
+# Start production server
+npm run start
+```
+
+### Environment Considerations
+
+- ✅ Set all production environment variables
+- ✅ Use production database
+- ✅ Configure CORS if needed
+- ✅ Set up monitoring and error tracking
+- ✅ Enable HTTPS
+- ✅ Configure webhook URLs
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. **Fork the repository**
+
+2. **Create a feature branch**
+```bash
+git checkout -b feature/amazing-feature
+```
+
+3. **Make your changes**
+   - Follow the existing code style
+   - Add tests if applicable
+   - Update documentation
+
+4. **Commit your changes**
+```bash
+git commit -m 'Add some amazing feature'
+```
+
+5. **Push to the branch**
+```bash
+git push origin feature/amazing-feature
+```
+
+6. **Open a Pull Request**
+
+### Development Guidelines
+
+- Write clean, readable code
+- Follow TypeScript best practices
+- Use meaningful variable and function names
+- Add comments for complex logic
+- Ensure type safety throughout
+- Test your changes locally
+- Update documentation as needed
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [Next.js](https://nextjs.org/) - React framework
+- [tRPC](https://trpc.io/) - Type-safe APIs
+- [Drizzle ORM](https://orm.drizzle.team/) - TypeScript ORM
+- [Stream.io](https://getstream.io/) - Video infrastructure
+- [OpenAI](https://openai.com/) - AI capabilities
+- [Inngest](https://www.inngest.com/) - Background jobs
+- [shadcn/ui](https://ui.shadcn.com/) - UI components
+- [Better Auth](https://www.better-auth.com/) - Authentication
 
 ---
 
-## Клієнтська частина (що бачить користувач)
-
-### Що використовується для створення веб-сайту:
-
-- **Next.js 15** - Основа веб-додатку (як фундамент будинку)
-- **React 19** - Бібліотека для створення інтерфейсу (кнопки, форми, списки)
-- **Tailwind CSS v4** - Стилі та дизайн (кольори, відступи, розміри)
-- **Shadcn/ui** - Готові красиві компоненти (як конструктор LEGO)
-- **React Query** - Керування даними з сервера (завантаження, збереження)
-- **React Hook Form** - Робота з формами (введення даних користувачем)
-- **Zod** - Перевірка правильності даних (чи правильний email, пароль)
-- **tRPC** - Безпечний зв'язок з сервером (гарантує, що дані передаються правильно)
-
-### Структура сторінок веб-сайту:
-
-#### 1. **Сторінки додатку**
-
-```
-app/
-├── (auth)/              # Сторінки входу (доступні всім)
-│   ├── sign-in/         # 🔑 Вхід в акаунт
-│   └── sign-up/         # ✍️ Реєстрація нового акаунту
-├── (dashboard)/         # Сторінки для зареєстрованих (лише після входу)
-│   ├── page.tsx         # 🏠 Головна сторінка
-│   ├── agents/          # 🤖 Сторінка з AI-агентами
-│   └── meetings/        # 📅 Сторінка зустрічей
-└── api/                 # Технічні адреси для обміну даними
-    └── trpc/[trpc]/     # API для зв'язку з сервером
-```
-
-#### 2. **Компоненти інтерфейсу**
-
-Використовуємо готову бібліотеку Shadcn/ui — це як конструктор, де є готові деталі:
-
-- **Прості**: Кнопки, поля введення, випадаючі списки, вікна
-- **Складні**: Таблиці з даними, пошук, діалогові вікна
-- **Повідомлення**: Спливаючі повідомлення, сповіщення, індикатори завантаження
-- **Корисні**: Порожні стани, аватари, пагінація
-
-#### 3. **Особливості роботи з даними**
-
-- **Автоматичне збереження**: Дані зберігаються в пам'яті, щоб сторінка відкривалась блискавично
-- **Оновлення у фоні**: Дані автоматично оновлюються без перезавантаження сторінки
-- **Збереження фільтрів**: Фільтри, пошук, сортування зберігаються в URL (можна поділитися посиланням)
-
-#### 4. **Робота з формами**
-
-- Автоматична перевірка правильності (чи вказаний email, чи довгий пароль)
-- Показ помилок одразу (не потрібно чекати відповіді сервера)
-- Зручні поля введення з підказками
-
-#### 5. **Адаптивний дизайн**
-
-- 📱 **На телефоні**: Все працює зручно на маленькому екрані
-- 💻 **На комп'ютері**: Використовується весь простір екрану
-- �️ **На планшеті**: Оптимізовано для середнього розміру
-- 🌙 **Темна/світла тема**: Можна перемикати за бажанням
-
-#### 6. **Stream Video & Chat SDK** 🎥
-
-**Stream SDK** - це готове рішення для відеозустрічей та чату, яке використовують великі компанії. Воно дає нам:
-
-**Відео можливості:**
-
-- 🎥 **Відеододзвінки**: HD якість, без затримок
-- 🎙️ **Аудіо**: Чистий звук без шумів
-- 💻 **Демонстрація екрану**: Показ свого екрану іншим
-- ⏺️ **Запис зустрічі**: Автоматичний запис всієї зустрічі
-- 👥 **Групові дзвінки**: До 100+ учасників одночасно
-
-**Чат можливості:**
-
-- 💬 **Текстові повідомлення**: Миттєві повідомлення під час зустрічі
-- 📎 **Файли**: Передача документів та зображень
-- 🚀 **Реакції**: Emoji реакції на повідомлення
-- 🔔 **Сповіщення**: Пуш-повідомлення про нові зустрічі
-
-**Чому Stream SDK:**
-
-- ✅ Надійність: 99.999% часу роботи (uptime)
-- 🚀 Швидкість: Менше 50ms затримки
-- 🔒 Безпека: End-to-end шифрування
-- 🌍 Глобальність: Сервери по всьому світу
-- 🛠️ Готове рішення: Не потрібно розробляти з нуля
-
----
-
-## Серверна частина (мозок системи)
-
-### Що використовується для роботи сервера:
-
-- **Next.js 15** - Основний фреймворк (керує всім)
-- **tRPC** - Безпечний зв'язок між клієнтом та сервером
-- **Drizzle ORM** - Робота з базою даних (зберігання інформації)
-- **PostgreSQL (Neon)** - База даних (як велика таблиця Excel з даними)
-- **Better Auth** - Система входу та безпеки
-- **TypeScript** - Мова програмування з перевіркою помилок
-
-### Як працює сервер:
-
-#### 1. **API - точки доступу до даних**
-
-Це як меню в ресторані, де можна замовити різні дії:
-
-**Для AI-агентів:**
-
-- 📋 Показати список всіх агентів
-- ➕ Створити нового агента
-- ✏️ Редагувати агента
-- 🗑️ Видалити агента
-
-**Для зустрічей:**
-
-- 📋 Показати список зустрічей
-- ➕ Створити нову зустріч
-- ✏️ Оновити статус зустрічі
-- 🗑️ Видалити зустріч
-
-**Чому це зручно:**
-
-- ✅ Автоматична перевірка даних
-- ✅ Неможливо відправити неправильні дані
-- ✅ Швидко та безпечно
-
-#### 2. **База даних - де зберігається інформація**
-
-Уявіть собі картотеку з папками, де все організовано:
-
-**Папка "Користувачі":**
-
-```
-👤 Користувач
-├── Ім'я
-├── Email
-├── Пароль (зашифрований)
-├── Фото профілю
-└── Дата реєстрації
-```
-
-**Папка "AI-Агенти":**
-
-```
-🤖 Агент
-├── Назва агента
-├── Власник (хто створив)
-├── Інструкції (що агент робить)
-└── Дата створення
-```
-
-**Папка "Зустрічі":**
-
-```
-📅 Зустріч
-├── Назва зустрічі
-├── Організатор
-├── Прикріплений AI-агент
-├── Статус (заплановано/йде/завершено)
-├── Час початку та завершення
-├── Запис зустрічі
-└── Резюме від AI
-```
-
-**Статуси зустрічей:**
-
-- 🔵 `upcoming` - Заплановано (чекаємо на початок)
-- 🟢 `active` - Йде зараз (зустріч активна)
-- ✅ `completed` - Завершено (зустріч закінчилась)
-- ⚙️ `processing` - Обробляється (AI створює резюме)
-- ❌ `cancelled` - Скасовано
-
-#### 3. **Автентифікація (вхід у систему)** 🔐
-
-**Як можна увійти:**
-
-- 📧 **Email + Пароль**: Звичайна реєстрація з паролем
-- 🐙 **GitHub**: Вхід через ваш GitHub акаунт
-- 🌐 **Google**: Вхід через Google акаунт
-
-**Що це дає:**
-
-- Не потрібно пам'ятати ще один пароль (через Google/GitHub)
-- Швидкий вхід в один клік
-- Безпека ваших даних
-- Кожен користувач бачить лише свої зустрічі та агентів
-
-#### 4. **Inngest - фонова обробка** ⚙️
-
-**Що таке Inngest?**
-
-Це як помічник, який виконує довгі та складні задачі у фоні, поки ви займаєтесь іншим. Уявіть, що ви попросили когось записати лекцію та зробити конспект — ви можете йти далі, а робота виконується без вас.
-
-**Для чого використовується:**
-
-1. **📝 Транскрипція аудіо** (20-30 хвилин)
-    - Зустріч завершилась → Inngest запускається
-    - Бере аудіо запис
-    - Відправляє в OpenAI Whisper
-    - Перетворює мову у текст
-    - Зберігає текстовий файл
-
-2. **📄 Генерація резюме** (2-5 хвилин)
-    - Отримує текст зустрічі
-    - Відправляє в ChatGPT з інструкціями
-    - Генерує короткий звіт з ключовими моментами
-    - Зберігає в базу даних
-
-3. **🔄 Обробка з повторними спробами**
-    - Якщо щось пішло не так → автоматична повторна спроба
-    - 3 спроби з інтервалом
-    - Якщо не вдалось → сповіщення адміністратора
-
-4. **⏱️ Заплановані задачі**
-    - Нагадування про зустрічі (за 10 хвилин)
-    - Автоматична архівація старих зустрічей
-    - Очищення тимчасових файлів
-
-**Переваги Inngest:**
-
-- ✅ Користувач не чекає (все в фоні)
-- ✅ Надійно (повторні спроби при помилках)
-- ✅ Моніторинг (видно статус кожної задачі)
-- ✅ Масштабованість (може обробляти 1000+ задач одночасно)
-
-**Приклад роботи:**
-
-```
-Користувач завершує зустріч ✅
-     ↓
-Система каже "Дякую, обробляємо..." 💬
-     ↓
-Inngest запускає фонову задачу 🔄
-     ↓
-1. Транскрипція (30 хв) → OpenAI Whisper 🎤
-2. Генерація резюме (5 хв) → ChatGPT 📝
-3. Збереження результатів → База даних 💾
-     ↓
-Користувач отримує сповіщення: "Готово!" 🔔
-```
-
----
-
-## Використані технології
-
-### Технології для клієнтської частини (що бачить користувач)
-
-| Технологія      | Для чого використовується                             |
-| --------------- | ----------------------------------------------------- |
-| **Next.js 15**  | Основа всього додатку (фундамент будинку)             |
-| **React 19**    | Створення кнопок, форм, інтерфейсу                    |
-| **TypeScript**  | Запобігає помилкам у коді (перевіряє все автоматично) |
-| **Tailwind**    | Красиві стилі та дизайн (кольори, розміри, анімації)  |
-| **Shadcn/ui**   | Готові компоненти (кнопки, таблиці, форми)            |
-| **React Query** | Швидке завантаження даних з сервера                   |
-| **Zod**         | Перевірка правильності даних (email, пароль, тощо)    |
-| **Stream SDK**  | Відео та аудіо дзвінки, чат                           |
-
-### Технології для серверної частини (мозок системи)
-
-| Технологія      | Для чого використовується                            |
-| --------------- | ---------------------------------------------------- |
-| **tRPC**        | Безпечний зв'язок клієнт-сервер                      |
-| **Drizzle ORM** | Робота з базою даних (додавання, читання, оновлення) |
-| **Better Auth** | Система входу (реєстрація, логін, безпека)           |
-| **PostgreSQL**  | База даних (зберігає всю інформацію)                 |
-| **Neon**        | Хмарна база даних (працює 24/7)                      |
-| **Inngest**     | Фонові задачі (транскрипція, генерація резюме)       |
-| **OpenAI**      | Штучний інтелект (ChatGPT, Whisper)                  |
-
-### Допоміжні інструменти
-
-| Інструмент      | Для чого використовується        |
-| --------------- | -------------------------------- |
-| **ESLint**      | Перевірка якості коду            |
-| **Drizzle Kit** | Управління структурою бази даних |
-
----
-
----
-
-## Безпека та стабільність роботи
-
-### 1. **Як захищаємо вхід у систему** 🔐
-
-**Безпечна автентифікація:**
-
-- 🔑 Паролі зашифровані (ніхто не може їх побачити, навіть адміністратори)
-- 🍪 Безпечні cookies для запам'ятовування сесії
-- 🚫 Захист від злому (обмеження спроб входу)
-- 📱 Можна виходити зі всіх пристроїв одночасно
-
-**Що відстежується:**
-
-- IP адреса (з якого місця ви зайшли)
-- Пристрій (телефон, комп'ютер, браузер)
-- Час входу (коли ви залогінились)
-
-### 2. **Як захищаємо дані** 🛡️
-
-**На рівні бази даних:**
-
-- Кожен користувач бачить лише свої дані
-- Автоматичне видалення пов'язаних даних (якщо видаляєте агента, видаляються й його зустрічі)
-- Обов'язкові поля (не можна зберегти неповну інформацію)
-- Унікальність email (два користувачі не можуть мати однаковий email)
-
-**Під час роботи:**
-
-- ✅ Перевірка всіх даних перед збереженням (чи правильний email, чи довгий пароль)
-- ✅ Захист від SQL injection (неможливо зламати базу даних через форми)
-- ✅ Захист від XSS (неможливо вставити шкідливий код)
-- ✅ Шифрування всіх паролів та секретів
-
-**Секретні ключі (Environment Variables):**
-
-```
-🔒 Всі паролі та секрети зберігаються окремо
-📦 Не публікуються на GitHub
-🌐 Різні налаштування для розробки та продакшну
-```
-
-### 3. **Як обробляємо помилки** 🚨
-
-**Якщо щось пішло не так:**
-
-**На сайті:**
-
-- 😊 Дружні повідомлення (без технічних термінів)
-- 🔄 Автоматичні повторні спроби (якщо інтернет відключився)
-- 💬 Спливаючі підказки (що саме не так і як виправити)
-- 🖼️ Красиві сторінки помилок (замість страшних технічних текстів)
-
-**На сервері:**
-
-- 📝 Логування помилок (зберігаємо для аналізу)
-- 🔙 Скасування змін при помилці (якщо щось не вдалось, все повертається назад)
-- 📧 Сповіщення розробників про критичні помилки
-
-### 4. **Швидкість та стабільність** ⚡
-
-**Що робимо для швидкості:**
-
-- 🚀 Швидке завантаження сторінок (Server Components)
-- 💾 Зберігання даних у пам'яті (кешування)
-- 🖼️ Оптимізація зображень (автоматичне стиснення)
-- 🔌 Постійне з'єднання з базою даних (Neon)
-- ⚡ Передзавантаження даних (React Query)
-
-**Що можна додати (рекомендації):**
-
-- 📊 Моніторинг помилок (Sentry) - бачити всі помилки в реальному часі
-- 📈 Аналіз продуктивності (Vercel Analytics) - як швидко працює сайт
-- 🔍 Моніторинг бази даних (Neon Console) - стан бази даних
-- 📡 Перевірка доступності (Uptime monitoring) - чи працює сайт 24/7
-
-### 5. **Захист від зловживань** 🛑
-
-**Що потрібно додати:**
-
-- ⏱️ Обмеження запитів (не більше 100 запитів за хвилину з одного IP)
-- 🤖 Захист від ботів (CAPTCHA для реєстрації)
-- 🚫 DDoS захист (захист від атак)
-
----
-
-## Тестування системи
-
-### 1. **Як ми перевіряємо якість** ✅
-
-**Автоматична перевірка:**
-
-- TypeScript перевіряє код під час написання
-- Неможливо надіслати неправильні дані через tRPC
-- Автоматичне виявлення помилок ще до запуску
-
-### 2. **Що було перевірено вручну** 🧪
-
-- ✅ Реєстрація та вхід працюють
-- ✅ OAuth через GitHub та Google працює
-- ✅ Можна створювати, редагувати, видаляти агентів
-- ✅ Можна створювати, редагувати, видаляти зустрічі
-- ✅ Сайт працює на телефоні, планшеті, комп'ютері
-- ✅ Темна та світла тема перемикаються
-- ✅ Всі кнопки та форми працюють правильно
-
-### 3. **План автоматичного тестування** 📋
-
-**Що можна додати в майбутньому:**
-
-**Unit тести** (перевірка окремих частин):
-
-- Компоненти інтерфейсу
-- Функції обробки даних
-- Валідація форм
-
-**Integration тести** (перевірка взаємодії):
-
-- API ендпоінти
-- Операції з базою даних
-- Процеси автентифікації
-
-**E2E тести** (перевірка всього процесу):
-
-- Повний процес реєстрації
-- Створення агента та зустрічі
-- Проведення відеозустрічі
-- Генерація резюме
-
----
-
-## Результати роботи проєкту
-
-### 1. **Що вже працює** ✅
-
-#### **Вхід у систему:**
-
-- ✅ Реєстрація з email та паролем
-- ✅ Вхід через Google
-- ✅ Вхід через GitHub
-- ✅ Безпечні сесії
-- ✅ Захист даних користувача
-
-#### **AI-Агенти:**
-
-- ✅ Створення власного агента з інструкціями
-- ✅ Редагування налаштувань агента
-- ✅ Видалення агентів
-- ✅ Пошук серед агентів
-- ✅ Сортування та фільтрація
-
-#### **Зустрічі:**
-
-- ✅ Планування нових зустрічей
-- ✅ Прикріплення AI-агента до зустрічі
-- ✅ Відстеження статусу (заплановано, йде, завершено)
-- ✅ Збереження часу початку та завершення
-- ✅ Фільтрація за статусом
-- ✅ Пагінація списку зустрічей
-
-#### **Інтерфейс:**
-
-- ✅ Працює на всіх пристроях (телефон, планшет, комп'ютер)
-- ✅ Темна та світла тема
-- ✅ Анімації завантаження
-- ✅ Зрозумілі повідомлення про помилки
-- ✅ Порожні стани (коли немає даних)
-- ✅ Спливаючі повідомлення
-- ✅ Підтвердження перед видаленням
-- ✅ Таблиці з сортуванням
-
-### 2. **Технічні досягнення** 🏆
-
-**Якість коду:**
-
-- ✅ Модульна структура (легко розширювати)
-- ✅ Type-safety (мінімум помилок)
-- ✅ Чистий та зрозумілий код
-- ✅ Покращений досвід розробки
-
-**Швидкодія:**
-
-- ✅ Швидке завантаження сторінок
-- ✅ Оптимістичні оновлення (зміни видно одразу)
-- ✅ Кешування даних
-- ✅ Оптимізовані запити до БД
-
-**База даних:**
-
-- ✅ 5 таблиць з даними
-- ✅ Зв'язки між таблицями
-- ✅ Автоматичні timestamps (дата створення/оновлення)
-- ✅ Цілісність даних
-
-### 3. **Що готово до додавання** 🔄
-
-**Підготовлена інфраструктура:**
-
-- 🔄 Stream Video SDK (відеододзвінки в реальному часі)
-- 🔄 Stream Chat SDK (чат під час зустрічей)
-- 🔄 OpenAI Whisper (перетворення мови в текст)
-- 🔄 ChatGPT (генерація розумних резюме)
-- 🔄 Inngest (фонова обробка транскрипції)
-- 🔄 File Storage (зберігання записів та файлів)
-
-### 4. **Метрики** 📊
-
-**Код:**
-
-- 95%+ покриття TypeScript
-- 4 головні модулі
-- 40+ компонентів для повторного використання
-- Нуль помилок типізації
-
-**База даних:**
-
-- 5 таблиць
-- Всі зв'язки налаштовані
-- Автоматичні мітки часу
-- Готовність до масштабування
-
-### 5. **Готовність до запуску** 🚀
-
-- ✅ Production build готовий
-- ✅ Змінні оточення налаштовані
-- ✅ База даних готова
-- ✅ Сумісність з Vercel
-- ✅ Serverless архітектура
-
-**Рекомендовані платформи:**
-
-- **Сайт**: Vercel (найкраще для Next.js)
-- **База даних**: Neon (хмарний PostgreSQL)
-- **Файли**: Vercel Blob або AWS S3 (для записів зустрічей)
-- **Фонові задачі**: Inngest Cloud
-
----
-
-## Висновки
-
-### Чому наше рішення хороше? 🌟
-
-1. **Сучасні технології** 🚀
-    - Використовуємо найновіші версії (Next.js 15, React 19, Tailwind v4)
-    - Все працює швидко та стабільно
-    - Легко підтримувати та розвивати
-
-2. **Безпека на всіх рівнях** 🔒
-    - Захищені паролі та дані
-    - Перевірка всіх введених даних
-    - Безпечний вхід через Google/GitHub
-
-3. **Зручно розробляти** 👨‍💻
-    - TypeScript знаходить помилки автоматично
-    - Гарячий перезапуск (бачиш зміни миттєво)
-    - Організований та чистий код
-
-4. **Можна легко розширити** 📈
-    - Модульна структура (легко додавати нові функції)
-    - Підготовлено для інтеграції AI
-    - Готово до масштабування (тисячі користувачів)
-
-5. **Швидко працює** ⚡
-    - Сторінки завантажуються миттєво
-    - Дані кешуються (не треба завантажувати повторно)
-    - Оптимізовані запити до бази даних
-
-6. **Легко підтримувати** 🛠️
-    - Чистий код з коментарями
-    - Зрозуміла структура проєкту
-    - Можна швидко знайти та виправити проблему
-
-### Що далі? 📋
-
-**Найближчі кроки:**
-
-1. **🎥 Додати Stream SDK**
-    - Відеододзвінки в реальному часі
-    - Чат під час зустрічей
-    - Демонстрація екрану
-    - Запис зустрічей
-
-2. **🤖 Інтегрувати OpenAI**
-    - ChatGPT для AI-агентів
-    - Whisper для транскрипції розмов
-    - Генерація розумних резюме
-    - Аналіз настрою та контексту
-
-3. **⚙️ Налаштувати Inngest**
-    - Фонова обробка транскрипції
-    - Автоматична генерація резюме
-    - Заплановані нагадування
-    - Обробка з повторними спробами
-
-4. **🧪 Додати тести**
-    - Unit тести для компонентів
-    - Integration тести для API
-    - E2E тести для користувацьких сценаріїв
-
-5. **📊 Моніторинг**
-    - Відстеження помилок (Sentry)
-    - Аналіз продуктивності (Vercel Analytics)
-    - Логування подій
-
-6. **🚀 CI/CD**
-    - Автоматичне тестування
-    - Автоматичний деплой
-    - Перевірка коду перед злиттям
-
-7. **📚 Документація**
-    - API документація
-    - Інструкції для користувачів
-    - Гайди для розробників
-
-### Підсумок 🎯
-
-**AI Agents Meetings** - це сучасна платформа з міцним технічним фундаментом, яка готова до:
-
-- ✅ Реального використання
-- ✅ Інтеграції AI функцій
-- ✅ Масштабування
-- ✅ Додавання нових можливостей
-
-Проєкт побудований на перевірених та надійних технологіях, які використовують великі компанії по всьому світу. Система безпечна, швидка та легко розширюється.
-
-**Основні показники:**
-
-- 📊 95%+ покриття типами (мінімум помилок)
-- ⚡ Швидке завантаження (Server Components)
-- 🔒 Багаторівнева безпека
-- 📱 Працює на всіх пристроях
-- 🚀 Готово до production
-
-**Найближча перспектива:**
-З інтеграцією Stream SDK, OpenAI та Inngest платформа стане повноцінним рішенням для проведення розумних онлайн-зустрічей з AI-помічниками, які допоможуть користувачам бути більш продуктивними та організованими.
+**Built with ❤️ using Next.js, TypeScript, and AI**
