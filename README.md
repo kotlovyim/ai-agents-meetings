@@ -38,36 +38,42 @@ Zvjazok is a next-generation video conferencing platform that integrates AI agen
 ## ✨ Key Features
 
 ### 🤖 AI Agent Management
+
 - Create custom AI agents with personalized instructions
 - Configure agent behavior and communication style
 - Reusable agents across multiple meetings
 - Agent performance tracking
 
 ### 📹 Video Meetings
+
 - High-quality video conferencing powered by Stream
 - Real-time audio and video streaming
 - Multiple participants support
 - Meeting recording capabilities
 
 ### 📝 Meeting Management
+
 - Schedule and organize meetings
 - Assign AI agents to meetings
 - Track meeting status (upcoming, active, completed, processing, cancelled)
 - View meeting history and recordings
 
 ### 🎙️ Transcription & Analysis
+
 - Real-time speech-to-text transcription
 - AI-powered meeting summaries
 - Conversation analysis and insights
 - Searchable meeting transcripts
 
 ### 🔐 Authentication & Authorization
+
 - Secure authentication with Better Auth
 - Email/password and social login support
 - Session management
 - Protected routes and API endpoints
 
 ### 💳 Subscription Management
+
 - Tiered pricing plans
 - Usage tracking
 - Upgrade flow
@@ -76,17 +82,20 @@ Zvjazok is a next-generation video conferencing platform that integrates AI agen
 ## 🛠️ Technology Stack
 
 ### Core Framework
+
 - **[Next.js 15.5](https://nextjs.org/)** - React framework with App Router
 - **[React 19](https://react.dev/)** - UI library
 - **[TypeScript](https://www.typescriptlang.org/)** - Type-safe development
 
 ### Backend & API
+
 - **[tRPC 11.6](https://trpc.io/)** - End-to-end typesafe APIs
 - **[Drizzle ORM 0.44](https://orm.drizzle.team/)** - TypeScript ORM
 - **[PostgreSQL](https://www.postgresql.org/)** - Database (via Neon)
 - **[Better Auth](https://www.better-auth.com/)** - Authentication
 
 ### AI & Real-time
+
 - **[OpenAI API](https://openai.com/)** - AI language models
 - **[@stream-io/openai-realtime-api](https://getstream.io/)** - Real-time audio transcription
 - **[@stream-io/video-react-sdk](https://getstream.io/)** - Video conferencing
@@ -94,6 +103,7 @@ Zvjazok is a next-generation video conferencing platform that integrates AI agen
 - **[@inngest/agent-kit](https://www.inngest.com/)** - AI agent framework
 
 ### UI & Styling
+
 - **[Tailwind CSS 4](https://tailwindcss.com/)** - Utility-first CSS
 - **[Radix UI](https://www.radix-ui.com/)** - Accessible component primitives
 - **[shadcn/ui](https://ui.shadcn.com/)** - Re-usable components
@@ -102,11 +112,13 @@ Zvjazok is a next-generation video conferencing platform that integrates AI agen
 - **[Zod](https://zod.dev/)** - Schema validation
 
 ### State & Data Management
+
 - **[TanStack Query](https://tanstack.com/query)** - Data fetching & caching
 - **[TanStack Table](https://tanstack.com/table)** - Table component
 - **[nuqs](https://nuqs.47ng.com/)** - URL state management
 
 ### Developer Experience
+
 - **[ESLint](https://eslint.org/)** - Code linting
 - **[Drizzle Kit](https://orm.drizzle.team/kit-docs/overview)** - Database migrations
 - **[tsx](https://github.com/privatenumber/tsx)** - TypeScript execution
@@ -116,66 +128,71 @@ Zvjazok is a next-generation video conferencing platform that integrates AI agen
 
 ### System Architecture
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                         Client Layer                        │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
-│  │   Next.js    │  │   React 19   │  │  Tailwind    │       │
-│  │   App Router │  │   Components │  │     CSS      │       │
-│  └──────────────┘  └──────────────┘  └──────────────┘       │
-└─────────────────────────────────────────────────────────────┘
-                            ↕
-┌─────────────────────────────────────────────────────────────┐
-│                      API Layer (tRPC)                       │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
-│  │   Agents     │  │   Meetings   │  │    Auth      │       │
-│  │   Router     │  │   Router     │  │   Endpoints  │       │
-│  └──────────────┘  └──────────────┘  └──────────────┘       │
-└─────────────────────────────────────────────────────────────┘
-                            ↕
-┌─────────────────────────────────────────────────────────────┐
-│                      Business Logic                         │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
-│  │   Server     │  │   Inngest    │  │  Stream      │       │
-│  │   Actions    │  │   Functions  │  │  Video SDK   │       │
-│  └──────────────┘  └──────────────┘  └──────────────┘       │
-└─────────────────────────────────────────────────────────────┘
-                            ↕
-┌─────────────────────────────────────────────────────────────┐
-│                       Data Layer                            │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐       │
-│  │  Drizzle ORM │  │  PostgreSQL  │  │  Better Auth │       │
-│  │              │  │   (Neon)     │  │  Sessions    │       │
-│  └──────────────┘  └──────────────┘  └──────────────┘       │
-└─────────────────────────────────────────────────────────────┘
-                            ↕
-┌─────────────────────────────────────────────────────────────┐
-│                    External Services                        │
-│  ┌──────────────┐  ┌──────────────┐                         │
-│  │   OpenAI     │  │  Stream.io   │                         │
-│  │     API      │  │    Video     │                         │
-│  └──────────────┘  └──────────────┘                         │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+  subgraph Client["Client Layer"]
+    NextJS["Next.js<br/>App Router"]
+    React["React 19<br/>Components"]
+    Tailwind["Tailwind CSS"]
+  end
+
+  subgraph API["API Layer (tRPC)"]
+    TRPC["tRPC<br/>Agents / Meetings / Auth"]
+  end
+
+  subgraph Business["Business Logic"]
+    Server["Server Actions"]
+    Inngest["Inngest Functions"]
+    Stream["Stream Video SDK"]
+  end
+
+  subgraph Data["Data Layer"]
+    Drizzle["Drizzle ORM"]
+    Postgres["PostgreSQL (Neon)"]
+    BetterAuth["Better Auth Sessions"]
+  end
+
+  subgraph External["External Services"]
+    OpenAI["OpenAI API"]
+    StreamIO["Stream.io Video"]
+    Stripe["Stripe<br/>Payments"]
+  end
+
+  NextJS --> TRPC
+  React --> TRPC
+  Tailwind --> NextJS
+  TRPC --> Server
+  Server --> Inngest
+  Server --> Stream
+  Server --> Drizzle
+  Inngest --> Drizzle
+  Stream --> OpenAI
+  Stream --> StreamIO
+  Server --> Stripe
 ```
 
 ### Application Flow
 
 #### 1. **User Authentication Flow**
+
 ```
 User → Sign In/Up Page → Better Auth → Database → Session Created → Dashboard
 ```
 
 #### 2. **Agent Creation Flow**
+
 ```
 User → Agent Form → tRPC Mutation → Validation (Zod) → Database → Agent Created
 ```
 
 #### 3. **Meeting Creation Flow**
+
 ```
 User → Meeting Form → Select Agent → tRPC Mutation → Database → Stream Call Created
 ```
 
 #### 4. **Live Meeting Flow**
+
 ```
 User Joins → Stream Video Call → OpenAI Realtime API → Live Transcription
                                                       → AI Agent Response
@@ -183,6 +200,7 @@ User Joins → Stream Video Call → OpenAI Realtime API → Live Transcription
 ```
 
 #### 5. **Post-Meeting Processing Flow**
+
 ```
 Meeting Ends → Inngest Event Triggered → Background Job
                                        → Fetch Recording
@@ -206,6 +224,7 @@ Meeting Ends → Inngest Event Triggered → Background Job
 ### Core Tables
 
 #### Users & Authentication
+
 ```typescript
 user
   ├── id (PK)
@@ -238,6 +257,7 @@ account
 ```
 
 #### Agents
+
 ```typescript
 agents
   ├── id (PK, nanoid)
@@ -249,6 +269,7 @@ agents
 ```
 
 #### Meetings
+
 ```typescript
 meetings
   ├── id (PK, nanoid)
@@ -267,6 +288,7 @@ meetings
 ```
 
 ### Relationships
+
 - **One-to-Many**: User → Agents, User → Meetings
 - **One-to-Many**: Agent → Meetings
 - **Cascade Delete**: Deleting a user removes all their agents and meetings
@@ -392,12 +414,14 @@ modules/[feature]/
 ### Installation
 
 1. **Clone the repository**
+
 ```bash
 git clone https://github.com/kotlovyim/zvjazok.git
 cd zvjazok
 ```
 
 2. **Install dependencies**
+
 ```bash
 npm install
 # or
@@ -407,6 +431,7 @@ yarn install
 ```
 
 3. **Set up environment variables**
+
 ```bash
 cp .env.example .env.local
 ```
@@ -414,16 +439,19 @@ cp .env.example .env.local
 4. **Configure your `.env.local`** (see [Environment Variables](#environment-variables))
 
 5. **Set up the database**
+
 ```bash
 npm run db:push
 ```
 
 6. **Run the development server**
+
 ```bash
 npm run dev
 ```
 
 7. **Open your browser**
+
 ```
 http://localhost:3000
 ```
@@ -463,21 +491,25 @@ NGROK_URL="https://your-subdomain.ngrok-free.dev"
 ### Getting API Keys
 
 #### OpenAI
+
 1. Visit [platform.openai.com](https://platform.openai.com/)
 2. Create an account and navigate to API keys
 3. Generate a new secret key
 
 #### Stream.io
+
 1. Visit [getstream.io](https://getstream.io/)
 2. Create an account and select Video & Audio
 3. Create an app and copy the API key and secret
 
 #### Inngest
+
 1. Visit [inngest.com](https://www.inngest.com/)
 2. Create an account and workspace
 3. Copy the event key and signing key from settings
 
 #### Stripe (Optional)
+
 1. Visit [stripe.com](https://stripe.com/)
 2. Create an account
 3. Get API keys from Developers → API keys
@@ -504,16 +536,19 @@ npm run dev:webhook     # Start ngrok tunnel for webhook testing
 ### Development Workflow
 
 1. **Start the development server**
+
 ```bash
 npm run dev
 ```
 
 2. **For webhook testing (parallel terminal)**
+
 ```bash
 npm run dev:webhook
 ```
 
 3. **Access Drizzle Studio for database management**
+
 ```bash
 npm run db:studio
 ```
@@ -546,6 +581,7 @@ npx drizzle-kit migrate
 All tRPC endpoints are available at `/api/trpc/[trpc]`
 
 #### Agents Router
+
 - `agents.getMany` - List all user's agents with pagination
 - `agents.getOne` - Get single agent by ID
 - `agents.create` - Create new agent
@@ -553,6 +589,7 @@ All tRPC endpoints are available at `/api/trpc/[trpc]`
 - `agents.delete` - Delete agent
 
 #### Meetings Router
+
 - `meetings.getMany` - List all user's meetings with pagination
 - `meetings.getOne` - Get single meeting by ID
 - `meetings.create` - Create new meeting
@@ -563,15 +600,18 @@ All tRPC endpoints are available at `/api/trpc/[trpc]`
 ### REST Endpoints
 
 #### Authentication
+
 - `POST /api/auth/sign-in` - Sign in user
 - `POST /api/auth/sign-up` - Register new user
 - `POST /api/auth/sign-out` - Sign out user
 - `GET /api/auth/session` - Get current session
 
 #### Chat
+
 - `POST /api/chat` - Chat with AI agent
 
 #### Webhooks
+
 - `POST /api/webhook` - Stripe webhook handler
 - `POST /api/inngest` - Inngest webhook handler
 
@@ -607,17 +647,17 @@ The project uses [shadcn/ui](https://ui.shadcn.com/) components:
 1. **Push code to GitHub**
 
 2. **Import to Vercel**
-   - Visit [vercel.com](https://vercel.com/)
-   - Import your GitHub repository
-   - Configure environment variables
-   - Deploy
+    - Visit [vercel.com](https://vercel.com/)
+    - Import your GitHub repository
+    - Configure environment variables
+    - Deploy
 
 3. **Configure environment variables** in Vercel dashboard
 
 4. **Set up webhooks**
-   - Update `BETTER_AUTH_URL` to your production URL
-   - Configure Stripe webhook with production URL
-   - Update Inngest environment
+    - Update `BETTER_AUTH_URL` to your production URL
+    - Configure Stripe webhook with production URL
+    - Update Inngest environment
 
 ### Manual Deployment
 
@@ -645,21 +685,24 @@ Contributions are welcome! Please follow these steps:
 1. **Fork the repository**
 
 2. **Create a feature branch**
+
 ```bash
 git checkout -b feature/amazing-feature
 ```
 
 3. **Make your changes**
-   - Follow the existing code style
-   - Add tests if applicable
-   - Update documentation
+    - Follow the existing code style
+    - Add tests if applicable
+    - Update documentation
 
 4. **Commit your changes**
+
 ```bash
 git commit -m 'Add some amazing feature'
 ```
 
 5. **Push to the branch**
+
 ```bash
 git push origin feature/amazing-feature
 ```
